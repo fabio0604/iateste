@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Ia Contador do prof Fábio
-    </title>
+    <title>AI Time Manager</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,34 +48,55 @@
             margin: 20px auto;
             width: 100px;
             height: 150px;
-            background: linear-gradient(to bottom, #f4f4f9 50%, #007BFF 50%);
-            clip-path: polygon(50% 0%, 100% 20%, 100% 80%, 50% 100%, 0% 80%, 0% 20%);
-            animation: spin 1s linear infinite;
+            position: relative;
         }
-        @keyframes spin {
+        .hourglass .structure {
+            width: 100px;
+            height: 150px;
+            background: transparent;
+            border: 5px solid #333;
+            border-radius: 50%;
+            clip-path: polygon(50% 0%, 100% 20%, 100% 80%, 50% 100%, 0% 80%, 0% 20%);
+        }
+        .hourglass .sand {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 10px;
+            height: 100%;
+            background: #007BFF;
+            transform: translateX(-50%);
+            animation: sandFlow 2s linear infinite;
+        }
+        @keyframes sandFlow {
             0% {
-                transform: rotate(0deg);
+                height: 100%;
+                top: 0;
             }
             100% {
-                transform: rotate(360deg);
+                height: 0%;
+                top: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Projeto Ia Contador do prof Fábio</h1>
+        <h1>AI Time Manager</h1>
         
-        <h2>Calculador de Tempo s - m - h</h2>
+        <h2>Calculate Time</h2>
         <input type="number" id="timeInput" placeholder="Enter time in seconds">
         <button onclick="calculateTime()">Calculate</button>
         <p id="result"></p>
 
-        <h2>Contagem Regressiva</h2>
+        <h2>Countdown Timer</h2>
         <input type="number" id="countdownInput" placeholder="Enter countdown time in seconds">
         <button onclick="startCountdown()">Start Countdown</button>
         <p id="countdownDisplay"></p>
-        <div id="hourglass" class="hourglass" style="display: none;"></div>
+        <div id="hourglass" class="hourglass" style="display: none;">
+            <div class="structure"></div>
+            <div class="sand"></div>
+        </div>
     </div>
 
     <script>
