@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador do prof Fábio</title>
+    <title>Projeto Ia Contador do prof Fábio
+    </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,21 +45,38 @@
             font-size: 1.2rem;
             color: #007BFF;
         }
+        .hourglass {
+            margin: 20px auto;
+            width: 100px;
+            height: 150px;
+            background: linear-gradient(to bottom, #f4f4f9 50%, #007BFF 50%);
+            clip-path: polygon(50% 0%, 100% 20%, 100% 80%, 50% 100%, 0% 80%, 0% 20%);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Projeto Ia Contador do prof Fábio</h1>
         
-        <h2>Contador de segundos do Colégio Julia Wanderley</h2>
+        <h2>Calculador de Tempo s - m - h</h2>
         <input type="number" id="timeInput" placeholder="Enter time in seconds">
         <button onclick="calculateTime()">Calculate</button>
         <p id="result"></p>
 
-        <h2>Timer da Colégio Julia Wanderley</h2>
+        <h2>Contagem Regressiva</h2>
         <input type="number" id="countdownInput" placeholder="Enter countdown time in seconds">
         <button onclick="startCountdown()">Start Countdown</button>
         <p id="countdownDisplay"></p>
+        <div id="hourglass" class="hourglass" style="display: none;"></div>
     </div>
 
     <script>
@@ -84,6 +102,8 @@
             }
 
             const display = document.getElementById('countdownDisplay');
+            const hourglass = document.getElementById('hourglass');
+            hourglass.style.display = 'block';
             display.innerText = `${countdown} seconds remaining.`;
 
             const timer = setInterval(() => {
@@ -91,6 +111,7 @@
                 if (countdown < 0) {
                     clearInterval(timer);
                     display.innerText = "Time's up!";
+                    hourglass.style.display = 'none';
                 } else {
                     display.innerText = `${countdown} seconds remaining.`;
                 }
