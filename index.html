@@ -70,6 +70,25 @@
     </div>
 
     <script>
+    HEAD
+        const canvas = document.getElementById('hourglassCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const grains = [];
+        const totalGrains = 100;
+        const gravity = 1;
+        const upperChamber = { x: 75, y: 50, width: 50, height: 100 };
+        const lowerChamber = { x: 75, y: 250, width: 50, height: 100 };
+
+        function initGrains() {
+            for (let i = 0; i < totalGrains; i++) {
+                grains.push({
+                    x: Math.random() * upperChamber.width + upperChamber.x,
+                    y: Math.random() * upperChamber.height + upperChamber.y,
+                    radius: 3,
+                    falling: true,
+                });
+
         const canvas = document.getElementById('hourglassCanvas');
         const ctx = canvas.getContext('2d');
 
