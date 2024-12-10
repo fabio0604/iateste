@@ -44,63 +44,19 @@
             font-size: 1.2rem;
             color: #007BFF;
         }
-        .hourglass {
+        canvas {
+            display: block;
             margin: 20px auto;
-            width: 100px;
-            height: 150px;
-            position: relative;
-        }
-        .hourglass .glass {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 150px;
-            background: linear-gradient(to bottom, transparent 45%, #007BFF 45%, #007BFF 55%, transparent 55%);
-            clip-path: polygon(50% 0, 100% 15%, 100% 85%, 50% 100%, 0 85%, 0 15%);
-            border: 3px solid #333;
-        }
-        .hourglass .sand-top, .hourglass .sand-bottom {
-            position: absolute;
-            left: 50%;
-            width: 20px;
-            background: #007BFF;
-            transform: translateX(-50%);
-        }
-        .hourglass .sand-top {
-            top: 10%;
-            height: 20%;
-        }
-        .hourglass .sand-bottom {
-            bottom: 10%;
-            height: 10%;
-        }
-        .hourglass .flow {
-            position: absolute;
-            left: 50%;
-            top: 45%;
-            width: 5px;
-            height: 10%;
-            background: #007BFF;
-            transform: translateX(-50%);
-            animation: flow 1s linear infinite;
-        }
-        @keyframes flow {
-            0% {
-                height: 10%;
-                opacity: 1;
-            }
-            100% {
-                height: 0;
-                opacity: 0;
-            }
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>AI Time Manager</h1>
-        
+
         <h2>Calculate Time</h2>
         <input type="number" id="timeInput" placeholder="Enter time in seconds">
         <button onclick="calculateTime()">Calculate</button>
@@ -110,15 +66,98 @@
         <input type="number" id="countdownInput" placeholder="Enter countdown time in seconds">
         <button onclick="startCountdown()">Start Countdown</button>
         <p id="countdownDisplay"></p>
-        <div id="hourglass" class="hourglass" style="display: none;">
-            <div class="glass"></div>
-            <div class="sand-top"></div>
-            <div class="sand-bottom"></div>
-            <div class="flow"></div>
-        </div>
+        <canvas id="hourglassCanvas" width="200" height="400"></canvas>
     </div>
 
     <script>
+        const canvas = document.getElementById('hourglassCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const grains = [];
+        const totalGrains = 100;
+        const gravity = 0.5;
+        const bottomY = 300;
+
+        function initGrains() {
+            for (let i = 0; i < totalGrains; i++) {
+                grains.push({
+                    x: Math.random() * 100 + 50,
+                    y: Math.random() * 100 + 50,
+                    radius: 3,
+                    falling: true,
+                });
+            }
+        }
+
+        function drawHourglass() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the glass structure
+            ctx.fillStyle = '#ccc';
+            ctx.beginPath();
+            ctx.moveTo(50, 50);
+            ctx.lineTo(150, 50);
+            ctx.lineTo(120, 200);
+            ctx.lineTo(80, 200);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(80, 200);
+            ctx.lineTo(120, 200);
+            ctx.lineTo(150, 350);
+            ctx.lineTo(50, 350);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw grains of sand
+            grains.forEach(grain => {
+                ctx.beginPath();
+                ctx.arc(grain.x, grain.y, grain.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700';
+                ctx.fill();
+            });
+        }
+
+        function updateGrains() {
+            grains.forEach(grain => {
+                if (grain.falling) {
+                    grain.y += gravity;
+                    if (grain.y > bottomY) {
+                        grain.falling = false;
+                        grain.y = bottomY;
+                    }
+                }
+            });
+        }
+
+        function animate() {
+            updateGrains();
+            drawHourglass();
+            requestAnimationFrame(animate);
+        }
+
+        function startCountdown() {
+            let countdown = parseInt(document.getElementById('countdownInput').value);
+            if (isNaN(countdown) || countdown < 0) {
+                document.getElementById('countdownDisplay').innerText = "Please enter a valid positive number.";
+                return;
+            }
+
+            const display = document.getElementById('countdownDisplay');
+            display.innerText = `${countdown} seconds remaining.`;
+
+            const timer = setInterval(() => {
+                countdown--;
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    display.innerText = "Time's up!";
+                } else {
+                    display.innerText = `${countdown} seconds remaining.`;
+                }
+            }, 1000);
+        }
+
         function calculateTime() {
             const time = parseInt(document.getElementById('timeInput').value);
             if (isNaN(time) || time < 0) {
@@ -131,29 +170,8 @@
             document.getElementById('result').innerText = `${hours} hours, ${minutes} minutes, and ${seconds} seconds.`;
         }
 
-        function startCountdown() {
-            let countdown = parseInt(document.getElementById('countdownInput').value);
-            if (isNaN(countdown) || countdown < 0) {
-                document.getElementById('countdownDisplay').innerText = "Please enter a valid positive number.";
-                return;
-            }
-
-            const display = document.getElementById('countdownDisplay');
-            const hourglass = document.getElementById('hourglass');
-            hourglass.style.display = 'block';
-            display.innerText = `${countdown} seconds remaining.`;
-
-            const timer = setInterval(() => {
-                countdown--;
-                if (countdown < 0) {
-                    clearInterval(timer);
-                    display.innerText = "Time's up!";
-                    hourglass.style.display = 'none';
-                } else {
-                    display.innerText = `${countdown} seconds remaining.`;
-                }
-            }, 1000);
-        }
+        initGrains();
+        animate();
     </script>
 </body>
 </html>
